@@ -1,0 +1,32 @@
+<html>
+<head>
+
+    <title>{% block title %} MARK'S PIZZERIA {%endblock%}</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">
+</head>
+
+<body>
+
+<nav class="navbar">
+        <ul class="nav-links">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+
+        </ul>
+    </nav>
+
+
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+
+
+
+
+
+
+    <script src="{{url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
