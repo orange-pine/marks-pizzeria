@@ -1,0 +1,85 @@
+<html>
+
+{% extends "layout.html" %}
+
+
+{% block title %}Welcome Page{% endblock %}
+
+
+{% block content %}
+
+
+<div class="container">
+        <header>
+            <h1>Checkout</h1>
+        </header>
+
+        {% if cart_items %}
+        <div class="cart-section">
+            <h2>Your Order</h2>
+
+            {% for item in cart_items %}
+            <div class="cart-item">
+                <img src="{{ item.image }}" alt="{{ item.name }}">
+                <div class="cart-item-details">
+                    <h3>{{ item.name }}</h3>
+                    <p class="item-type">{{ item.type }}</p>
+                    <p class="cart-price">${{ "%.2f"|format(item.price) }}</p>
+                </div>
+                <div class="cart-item-actions">
+                    <form method="POST" action="{{ url_for('remove_from_cart') }}">
+                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                        <button type="submit" class="remove-btn">Remove</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="cart-total">
+                <h3>Total: ${{ "%.2f"|format(total) }}</h3>
+            </div>
+        </div>
+
+        <div class="checkout-form">
+            <h2>Delivery Information</h2>
+            <form method="POST" action="{{ url_for('place_order') }}">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Delivery Address</label>
+                    <textarea id="address" name="address" rows="3" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Special Instructions (optional)</label>
+                    <textarea id="notes" name="notes" rows="2"></textarea>
+                </div>
+
+                <button type="submit" class="place-order-btn">Place Order</button>
+            </form>
+        </div>
+
+        {% else %}
+        <div class="empty-cart">
+            <p>Your cart is empty</p>
+            <a href="{{ url_for('index') }}">Return to Menu</a>
+        </div>
+        {% endif %}
+
+        <div class="back-link">
+            <a href="{{ url_for('index') }}">Back to Menu</a>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+</html>>
