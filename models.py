@@ -1,66 +1,160 @@
-from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy()
-
-#############################
-#       db models
-#############################
-
-
-class Pizzas(db.Model):
-    __tablename__ = 'pizzas'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-
-
-
-
-    def get_ingredient_list(self):
-        return [n.name for n in self.ingredients]
-
-    def get_ingredient_prices(self):
-        return [n.price for n in self.ingredients]
-
-
-class Drinks(db.Model):
-    __tablename__ = 'drinks'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    price = db.Column(db.Numeric(10, 2), nullable=False)
-    vegetarian = db.Column(db.Boolean, nullable=False)
-    vegan = db.Column(db.Boolean, nullable=False)
-
-
-class Desserts(db.Model):
-    __tablename__ = 'desserts'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    price = db.Column(db.Numeric(10, 2), nullable=False)
-    vegetarian = db.Column(db.Boolean, nullable=False)
-    vegan = db.Column(db.Boolean, nullable=False)
-
-
-
-
-    def get_ingredient_list(self):
-        """Returns list of ingredient names"""
-        return [ing.name for ing in self.ingredients]
-
-class Ingredients(db.Model):
-    __tablename__ = 'ingredients'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    price = db.Column(db.Integer, nullable=False)
-    vegetarian = db.Column(db.Boolean, nullable=False)
-    vegan = db.Column(db.Boolean, nullable=False)
-
-pizza_ingredients = db.Table('pizza_ingredients',
-    db.Column('pizza_id', db.Integer, db.ForeignKey('pizzas.id'), primary_key=True),
-    db.Column('ingredient_id', db.Integer, db.ForeignKey('ingredients.id'), primary_key=True)
+from ast import In
+from datetime import date, datetime
+from sqlalchemy import (
+    create_engine,
+    Column,
+    Integer,
+    String,
+    Date,
+    Boolean,
+    ForeignKey,
+    TIMESTAMP,
+    Table
 )
+from sqlalchemy.orm import relationship, declarative_base, Mapped
 
+Base = declarative_base()
+
+PizzaIngredient = Table(
+    'PizzaIngredient',
+    Base.metadata,
+    Column('pizza_id', Integer, ForeignKey('Pizza.id')),
+    Column('ingredient_id', Integer, ForeignKey('Ingredient.id'))
+    )
+
+class Ingredient(Base):
+    __tablename__ = "Ingredient"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255))
+    price = Column(Integer)
+    vegan = Column(Boolean)
+    vegetarian = Column(Boolean)
+
+
+class Pizza(Base):
+    __tablename__ = "Pizza"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255))
+
+    ingredients: Mapped[list[Ingredient]] = relationship(
+        secondary=PizzaIngredient    )
+    # ordered_pizzas = relationship("OrderedPizza", back_populates="pizza")
+
+    # Calculate price dynamically from ingredient prices
+    @property
+    def price(self):
+        """Compute total price based on the sum of ingredient prices."""
+        if not self.ingredients:
+            return 0
+        return sum(ingredient.price for ingredient in self.ingredients)
+
+
+
+class Drink(Base):
+    __tablename__ = "Drink"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255))
+    price = Column(Integer)
+    vegan = Column(Boolean)
+    vegetarian = Column(Boolean)
+
+    # ordered_drinks = relationship("OrderedDrink", back_populates="drink")
+
+
+class Dessert(Base):
+    __tablename__ = "Dessert"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255))
+    price = Column(Integer)
+    vegan = Column(Boolean)
+    vegetarian = Column(Boolean)
+
+    # ordered_desserts = relationship("OrderedDessert", back_populates="dessert")
+
+
+class DiscountCode(Base):
+    __tablename__ = "DiscountCode"
+
+    id = Column(Integer, primary_key=True)
+    code = Column(String(255))
+    type = Column(String(255))
+    amount = Column(Integer)
+
+    # orders = relationship("Order", back_populates="discount")
+
+
+class DeliveryPerson(Base):
+    __tablename__ = "DeliveryPerson"
+
+    id = Column(Integer, primary_key=True)
+    postcode_start = Column(Integer)
+    postcode_end = Column(Integer)
+    status = Column(String(255))
+
+    # orders = relationship("Order", back_populates="delivery_person")
+
+
+class Order(Base):
+    __tablename__ = "Order"
+
+    id = Column(Integer, primary_key=True)
+    customer_id = Column(Integer, ForeignKey("Customer.id"))
+    delivery_person_id = Column(Integer, ForeignKey("DeliveryPerson.id"))
+    status = Column(String(255))
+    discount_id = Column(Integer, ForeignKey("DiscountCode.id"))
+    timestamp = Column(TIMESTAMP)
+
+    customer: Mapped["Customer"]= relationship(back_populates="orders")
+    # delivery_person = relationship("DeliveryPerson", back_populates="orders")
+    # discount = relationship("DiscountCode", back_populates="orders")
+    #
+    # pizzas = relationship("OrderedPizza", back_populates="order")
+    # desserts = relationship("OrderedDessert", back_populates="order")
+    # drinks = relationship("OrderedDrink", back_populates="order")
+
+
+class OrderedPizza(Base):
+    __tablename__ = "OrderedPizza"
+
+    order_id = Column(Integer, ForeignKey("Order.id"), primary_key=True)
+    pizza_id = Column(Integer, ForeignKey("Pizza.id"), primary_key=True)
+
+    # order = relationship("Order", back_populates="pizzas")
+    # pizza = relationship("Pizza", back_populates="ordered_pizzas")
+
+
+class OrderedDessert(Base):
+    __tablename__ = "OrderedDessert"
+
+    order_id = Column(Integer, ForeignKey("Order.id"), primary_key=True)
+    dessert_id = Column(Integer, ForeignKey("Dessert.id"), primary_key=True)
+
+    # order = relationship("Order", back_populates="desserts")
+    # dessert = relationship("Dessert", back_populates="ordered_desserts")
+
+
+class OrderedDrink(Base):
+    __tablename__ = "OrderedDrink"
+
+    order_id = Column(Integer, ForeignKey("Order.id"), primary_key=True)
+    drink_id = Column(Integer, ForeignKey("Drink.id"), primary_key=True)
+
+    # order = relationship("Order", back_populates="drinks")
+    # drink = relationship("Drink", back_populates="ordered_drinks")
+
+class Customer(Base):
+    __tablename__ = "Customer"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255))
+    birthday = Column(Date)
+    address = Column(String(255))
+    postcode = Column(Integer)
+
+    orders: Mapped[Order] = relationship(back_populates="customer")
 

@@ -88,3 +88,5 @@ CREATE TABLE OrderedDrink (
   FOREIGN KEY (orderId) REFERENCES Orders (id),
   FOREIGN KEY (drinkId) REFERENCES Drinks (id)
 );
+
+
