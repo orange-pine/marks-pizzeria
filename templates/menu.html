@@ -21,7 +21,7 @@
                 {% for pizza in pizzas %}
                 <div class="menu-item">
                     <div class="item-content">
-                        <h3>{{ pizza.name }}</h3>
+                      <h3>{{ pizza.name }}  {{"(vegan)" if pizza.vegan else "(vegetarian)" if pizza.vegetarian else ""}}</h3>
                         <details class="ingredients">
                             <summary>Ingredients</summary>
                             <ul>

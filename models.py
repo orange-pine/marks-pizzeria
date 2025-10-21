@@ -45,6 +45,23 @@ class Pizza(Base):
             return 0
         return sum(ingredient.price for ingredient in self.ingredients)
 
+    @property
+    def vegetarian(self):
+        vegetarian = True
+
+        for ingredient in self.ingredients:
+            if ingredient.vegetarian != True:
+                vegetarian = False
+        return vegetarian
+
+    @property
+    def vegan(self):
+        vegan = True
+
+        for ingredient in self.ingredients:
+            if ingredient.vegan != True:
+                vegan = False
+        return vegan
 
 
 class Drink(Base):

@@ -9,10 +9,8 @@ from sqlalchemy.sql.functions import func
 from models import Base, Pizza, Customer, Order, OrderedPizza  # import your SQLAlchemy 2.0 models
 from config import Config
 from contextlib import contextmanager
+import utils
 
-# ----------------------------------------
-# Flask setup
-# ----------------------------------------
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -40,27 +38,6 @@ def get_image(type, id):
 def get_description(type, id):
     return ""
 
-
-def get_pizzas(filter_name=None):
-    pizza_dicts = []
-
-    with db_session() as session:
-        stmt = select(Pizza)
-        if filter_name:
-            stmt = stmt.where(Pizza.name == filter_name)
-
-        pizzas = session.scalars(stmt).all()
-
-        for pizza in pizzas:
-            pizza_dicts.append({
-                "id": pizza.id,
-                "name": pizza.name,
-                # "description": get_description(0, pizza.id),
-                "price": pizza.price,
-                # "image": get_image(0, pizza.id) or "/static/images/default-pizza.jpg",
-            })
-
-    return pizza_dicts
 
 def get_total_price(item_dic):
     total_price = 0
@@ -101,27 +78,13 @@ def transaction():
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-
     return render_template("index.html")
 
 
 @app.route("/menu", methods=["GET", "POST"])
 def menu():
-    print(fsession)
 
-    pizza_dicts = []
-    with engine.connect() as conn:
-        for pizza in session.scalars(select(Pizza)):
-            pizza_dicts.append({
-                "id": pizza.id,
-                "name": pizza.name,
-                # "description": get_description(0, pizza.id),
-                "ingredients" : pizza.ingredients,
-                "price": pizza.price,
-                # "image": get_image(0, pizza.id) or "/static/images/default-pizza.jpg",
-            })
-    print(pizza_dicts)
-    return render_template("menu.html", pizzas=pizza_dicts)
+    return render_template("menu.html", pizzas=utils.get_pizzas())
 
 @app.route("/menu/add_to_cart", methods=["GET", "POST"])
 def add_to_cart():
@@ -131,24 +94,27 @@ def add_to_cart():
         "name" : request.form.get("item_name"),
         "price" : float(request.form.get("item_price"))
     }
-    fsession["cart"].append(added_item)
+    try:
+        fsession["cart"].append(added_item)
+    except:
+        fsession["cart"] = [added_item]
     fsession.modified = True
-    print(added_item)
-    print(fsession["cart"])
 
     return redirect(url_for("menu"))
 
 @app.route("/checkout", methods=["GET", "POST"])
 def checkout():
-
-
-    item_dic = fsession["cart"]
+    try:
+        item_dic = fsession["cart"]
+    except:
+        item_dic = []
     return render_template("checkout.html", cart_items=item_dic, total = get_total_price(item_dic))
 
 @app.route("/checkout/remove_from_cart", methods=["GET", "POST"])
 def remove_from_cart():
     deleted_item = request.form.get("item_id")
-    fsession["cart"].remove(deleted_item)
+    fsession["cart"].pop(int(deleted_item)-1)
+    fsession.modified = True
     return redirect(url_for("checkout"))
 
 @app.route("/checkout/place_order", methods=["GET", "POST"])
