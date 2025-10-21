@@ -55,10 +55,17 @@
                      <img src="{{ drink.image }}" alt="{{ drink.name }}">
                      <div class="item-content">
                          <h3>{{ drink.name }}</h3>
-                         <p class="description">{{ drink.description }}</p>
+<!--                         <p class="description">{{ drink.description }}</p>-->
                          <div class="item-footer">
-                             <span class="price">${{ "%.2f"|format(drink.price) }}</span>
-                                                    </div>
+                            <span class="price">${{ "%.2f"|format(drink.price) }}</span>
+                            <form method="POST" action="{{ url_for('add_to_cart') }}">
+                                <input type="hidden" name="item_id" value="{{ drink.id }}">
+                                <input type="hidden" name="item_type" value="drink">
+                                <input type="hidden" name="item_name" value="{{ drink.name }}">
+                                <input type="hidden" name="item_price" value="{{ drink.price }}">
+                                <button type="submit" class="add-btn">Add to Cart</button>
+                            </form>
+                        </div>
                      </div>
                  </div>
                  {% endfor %}
@@ -74,20 +81,18 @@
                      <img src="{{ dessert.image }}" alt="{{ dessert.name }}">
                      <div class="item-content">
                          <h3>{{ dessert.name }}</h3>
-                         <p class="description">{{ dessert.description }}</p>
-                         {% if dessert.ingredients %}
-                         <details class="ingredients">
-                             <summary>Ingredients</summary>
-                             <ul>
-                                 {% for ingredient in dessert.ingredients %}
-                                 <li>{{ ingredient }}</li>
-                                 {% endfor %}
-                             </ul>
-                         </details>
-                         {% endif %}
-                         <div class="item-footer">
-                             <span class="price">${{ "%.2f"|format(dessert.price) }}</span>
-                                                    </div>
+<!--                         <p class="description">{{ dessert.description }}</p>-->
+
+                            <div class="item-footer">
+                            <span class="price">${{ "%.2f"|format(dessert.price) }}</span>
+                            <form method="POST" action="{{ url_for('add_to_cart') }}">
+                                <input type="hidden" name="item_id" value="{{ dessert.id }}">
+                                <input type="hidden" name="item_type" value="dessert">
+                                <input type="hidden" name="item_name" value="{{ dessert.name }}">
+                                <input type="hidden" name="item_price" value="{{ dessert.price }}">
+                                <button type="submit" class="add-btn">Add to Cart</button>
+                            </form>
+                        </div>
                      </div>
                  </div>
                  {% endfor %}
