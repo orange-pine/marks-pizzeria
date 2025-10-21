@@ -10,12 +10,12 @@
 <div class = "container">
 
 
-<div class="container">
+    <div class="menu-section">
             <div class="orders-header">
-                <h1>Earnings</h1>
+                <h1>Admin Dashboard</h1>
             </div>
 
-        <ul class="nav-links">
+        <ul class="nav-links" style = background-color:#222222;padding:40px>
                 <li><a href="{{ url_for('current_orders') }}">Track Current Orders</a></li>
                  <li><a href="{{ url_for('top_pizzas') }}">Top Pizzas This Month</a></li>
 
@@ -24,14 +24,14 @@
             </ul>
 
 
-            <form method="GET" action="/admin/earnings" class="filter-form">
-                <select name="group_by" onchange="this.form.submit()">
-                    <option value="day" {% if group_by == 'month' %}selected{% endif %}>Month</option>
-                    <option value="week" {% if group_by == 'age' %}selected{% endif %}>Age</option>
-                    <option value="month" {% if group_by == 'gender' %}selected{% endif %}>Gender</option>
-                    <option value="month" {% if group_by == 'postcode' %}selected{% endif %}>Postal Code</option>
-                </select>
-            </form>
+<!--            <form method="GET" action="/admin/earnings" class="filter-form">-->
+<!--                <select name="group_by" onchange="this.form.submit()">-->
+<!--                    <option value="day" {% if group_by == 'month' %}selected{% endif %}>Month</option>-->
+<!--                    <option value="week" {% if group_by == 'age' %}selected{% endif %}>Age</option>-->
+<!--                    <option value="month" {% if group_by == 'gender' %}selected{% endif %}>Gender</option>-->
+<!--                    <option value="month" {% if group_by == 'postcode' %}selected{% endif %}>Postal Code</option>-->
+<!--                </select>-->
+<!--            </form>-->
 
 
 

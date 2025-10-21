@@ -1,7 +1,7 @@
 import datetime
 
 from flask import Flask, request, jsonify, render_template, session as fsession, redirect, url_for
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine, select, text
 from sqlalchemy.orm import Session, scoped_session, sessionmaker
 from sqlalchemy.sql.expression import desc
 from sqlalchemy.sql.functions import count, func
@@ -201,8 +201,10 @@ def current_orders():
 
     with db_session() as session:
 
-        for order in session.scalars(select(Order)):
-            current_orders.append({
+        c_orders = []
+
+        for order in session.scalars(select(Order).where(Order.status != 'Delivered').order_by(Order.status)):
+            c_orders.append({
                 "id": order.id,
                 "customer_name": order.customer.name,
                 "address": order.customer.address,
@@ -212,7 +214,7 @@ def current_orders():
                 "timestamp": order.timestamp
             })
 
-    return render_template("current_orders.html", orders=current_orders)
+    return render_template("current_orders.html", orders=c_orders)
 
 @app.route("/admin/top_pizzas", methods=["GET", "POST"])
 def top_pizzas():
@@ -223,14 +225,14 @@ def top_pizzas():
     top_pizzas_q = None
 
     top_pizzas = []
+    the_query = "SELECT Pizza.name, COUNT(OrderedPizza.order_id) AS order_count FROM OrderedPizza JOIN Pizza ON OrderedPizza.pizza_id = Pizza.id GROUP BY OrderedPizza.pizza_id, Pizza.name;"
 
     with db_session() as session:
-     for pizza in session.scalars(select(OrderedPizza.pizza_id, count(OrderedPizza.order_id)).group_by(OrderedPizza.pizza_id)):
-        print(pizza)
+     for pizza in session.execute(select(Pizza.name.label('name'),func.count(OrderedPizza.order_id).label('count')).join(OrderedPizza).group_by(Pizza.id, Pizza.name).order_by(func.count(OrderedPizza.order_id).desc())): #for pizza in session.query(OrderedPizza).from_statement(text(the_query)).all():
         top_pizzas.append({
             "name":pizza.name,
-            "count": pizza.count,
-            "total": pizza.total,
+            "count": pizza.count
+
 
         })
 
@@ -290,7 +292,7 @@ def admin_login_submit():
 def init_db():
     with engine.begin() as conn:
         Base.metadata.create_all(bind=conn)
-        print("✅ Database tables created successfully!")
+        print("Database tables created successfully!")
 
 
 if __name__ == "__main__":

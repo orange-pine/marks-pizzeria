@@ -17,7 +17,7 @@
             <!-- {% if orders %} -->
             <table class="orders-table">
                 <thead>
-                    <tr>
+                    <tr style = "padding-inline: 10px">
                         <th>Order #</th>
                         <th>Customer</th>
                         <th>Delivery Person</th>
@@ -26,7 +26,7 @@
                         <th>Time</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody style="justify-content: center;text-align: center;padding-inline: 10px">
                     {% for order in orders %}
                     <tr>
                         <td class="order-id">#{{ order.id }}</td>
@@ -37,8 +37,8 @@
                         <td>{{ order.delivery }}</td>
                         <td>{{ order.status }}</td>
 
-                        <td class="order-total">${{ "%.2f"|format(order.total) }}</td>
-                        <td class="order-time">{{ order.timestamp }}</td>
+                        <td>${{ "%.2f"|format(order.total) }}</td>
+                        <td>{{ order.timestamp }}</td>
 
                     </tr>
                     {% endfor %}

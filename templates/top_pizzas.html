@@ -8,25 +8,26 @@
 
 {% block content %}
 
+<div class = "horizontal-slot">
 
-<div class="orders-container">
+    <div class="order-container"">
             {% if top_pizza%}
-            <table class="orders-table">
+            <table class="order-table">
                 <thead>
                     <tr>
                         <th>Item Name</th>
                         <th>Amount sold</th>
-                        <th>Total</th>
+<!--                        <th>Total</th>-->
 
                     </tr>
                 </thead>
                 <tbody>
                     {% for pizza in top_pizza %}
-                    <tr>
-                        <td> pizza.name
+                    <tr style="padding:5px">
+                        <td class="table-bold"> {{pizza.name}}
                         </td>
-                        <td class="order-total">{{ pizza.count }}</td>
-                        <td>{{ pizza.total }}</td>
+                        <td class="table-centered"> {{ pizza.count }}</td>
+<!--                        <td>{{ pizza.total }}</td>-->
 
                     </tr>
                     {% endfor %}
@@ -39,6 +40,9 @@
             </div>
             {% endif%}
         </div>
+
+
+</div>
 
 
 

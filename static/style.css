@@ -404,3 +404,62 @@ header p {
 
 
 }
+
+.orders-container{
+    display: flex;
+    justify-content: center;
+    align-self: end;
+    align-items:center;
+    margin-top: 200px;
+    background: #afafaf;
+    width: 1000px;
+    padding: 10px;
+
+
+}
+
+.order-table{
+    background: #e8e8e8;
+    outline-color: #333333;
+    outline-width: 1px;
+    padding: 4px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.table-centered{
+    justify-content: center;
+}
+
+.table-bold{
+    font-style: oblique;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+input[type="submit"] {
+    background-color: #7c0000;
+    margin: 0 auto;
+    justify-content: center;
+    align-self: center;
+    align-items: center;
+    text-align:center;
+
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+input[type="submit"]:hover {
+    background-color: #b00000;
+}

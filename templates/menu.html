@@ -46,57 +46,57 @@
             </div>
         </section>
 
-        <!-- Drinks Section -->
-        <!-- <section class="menu-section"> -->
-        <!--     <h2>Drinks</h2> -->
-        <!--     <div class="items-grid"> -->
-        <!--         {% for drink in drinks %} -->
-        <!--         <div class="menu-item"> -->
-        <!--             <img src="{{ drink.image }}" alt="{{ drink.name }}"> -->
-        <!--             <div class="item-content"> -->
-        <!--                 <h3>{{ drink.name }}</h3> -->
-        <!--                 <p class="description">{{ drink.description }}</p> -->
-        <!--                 <div class="item-footer"> -->
-        <!--                     <span class="price">${{ "%.2f"|format(drink.price) }}</span> -->
-        <!--                                            </div> -->
-        <!--             </div> -->
-        <!--         </div> -->
-        <!--         {% endfor %} -->
-        <!--     </div> -->
-        <!-- </section> -->
+         Drinks Section
+         <section class="menu-section">
+             <h2>Drinks</h2>
+             <div class="items-grid">
+                 {% for drink in drinks %}
+                 <div class="menu-item">
+                     <img src="{{ drink.image }}" alt="{{ drink.name }}">
+                     <div class="item-content">
+                         <h3>{{ drink.name }}</h3>
+                         <p class="description">{{ drink.description }}</p>
+                         <div class="item-footer">
+                             <span class="price">${{ "%.2f"|format(drink.price) }}</span>
+                                                    </div>
+                     </div>
+                 </div>
+                 {% endfor %}
+             </div>
+         </section>
 
-        <!-- Desserts Section -->
-        <!-- <section class="menu-section"> -->
-        <!--     <h2>Desserts</h2> -->
-        <!--     <div class="items-grid"> -->
-        <!--         {% for dessert in desserts %} -->
-        <!--         <div class="menu-item"> -->
-        <!--             <img src="{{ dessert.image }}" alt="{{ dessert.name }}"> -->
-        <!--             <div class="item-content"> -->
-        <!--                 <h3>{{ dessert.name }}</h3> -->
-        <!--                 <p class="description">{{ dessert.description }}</p> -->
-        <!--                 {% if dessert.ingredients %} -->
-        <!--                 <details class="ingredients"> -->
-        <!--                     <summary>Ingredients</summary> -->
-        <!--                     <ul> -->
-        <!--                         {% for ingredient in dessert.ingredients %} -->
-        <!--                         <li>{{ ingredient }}</li> -->
-        <!--                         {% endfor %} -->
-        <!--                     </ul> -->
-        <!--                 </details> -->
-        <!--                 {% endif %} -->
-        <!--                 <div class="item-footer"> -->
-        <!--                     <span class="price">${{ "%.2f"|format(dessert.price) }}</span> -->
-        <!--                                            </div> -->
-        <!--             </div> -->
-        <!--         </div> -->
-        <!--         {% endfor %} -->
-        <!--     </div> -->
-        <!-- </section> -->
+         Desserts Section
+         <section class="menu-section">
+             <h2>Desserts</h2>
+             <div class="items-grid">
+                 {% for dessert in desserts %}
+                 <div class="menu-item">
+                     <img src="{{ dessert.image }}" alt="{{ dessert.name }}">
+                     <div class="item-content">
+                         <h3>{{ dessert.name }}</h3>
+                         <p class="description">{{ dessert.description }}</p>
+                         {% if dessert.ingredients %}
+                         <details class="ingredients">
+                             <summary>Ingredients</summary>
+                             <ul>
+                                 {% for ingredient in dessert.ingredients %}
+                                 <li>{{ ingredient }}</li>
+                                 {% endfor %}
+                             </ul>
+                         </details>
+                         {% endif %}
+                         <div class="item-footer">
+                             <span class="price">${{ "%.2f"|format(dessert.price) }}</span>
+                                                    </div>
+                     </div>
+                 </div>
+                 {% endfor %}
+             </div>
+         </section>
 
-        <!-- <div class="checkout-link"> -->
-        <!--     <a href="{{ url_for('checkout') }}">Go to Checkout</a> -->
-        <!-- </div> -->
+         <div class="checkout-link">
+             <a href="{{ url_for('checkout') }}">Go to Checkout</a>
+         </div>
     </div>
 
 
