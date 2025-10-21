@@ -1,7 +1,12 @@
+import datetime
+
 from flask import Flask, request, jsonify, render_template, session as fsession, redirect, url_for
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session, scoped_session, sessionmaker
-from models import Base, Pizza, Customer, Order  # import your SQLAlchemy 2.0 models
+from sqlalchemy.sql.expression import desc
+from sqlalchemy.sql.functions import func
+
+from models import Base, Pizza, Customer, Order, OrderedPizza  # import your SQLAlchemy 2.0 models
 from config import Config
 from contextlib import contextmanager
 
@@ -178,7 +183,95 @@ def order_success():
 def admin():
     if not fsession.get("admin"):
         return redirect("/admin/login")
-    return render_template("index.html")
+
+
+
+    top_pizza = []
+    with db_session() as session:
+        stmt = select(Pizza)
+
+        date_month_ago = datetime.datetime.now() - datetime.timedelta(days=30)
+
+        top_pizzas = db_session.query(
+            Pizza.name,
+            func.count(OrderedPizza.pizza_id).label('total_sold')
+        ).join(
+            OrderedPizza, Pizza.id == OrderedPizza.pizza_id
+        ).join(
+            Order, OrderedPizza.order_id == Order.id
+        ).filter(
+            Order.timestamp >= date_month_ago
+        ).group_by(
+            Pizza.id, Pizza.name
+        ).order_by(
+            desc('total_sold')
+        ).limit(3).all()
+
+
+        for pizza in top_pizzas:
+            countp = func.count(Pizza.id).label("count")
+            top_pizza.append({
+                "name": pizza.name,
+                "count": countp,
+                "price": pizza.price * countp,
+
+            })
+
+    earnings_data = []
+    #data needed:
+    # employee = {
+    #     "id":,
+    #     "name":,
+    #     "age":,
+    #     "gender":,
+    #     "postal_code":,
+    #     "earnings":[total sum]
+    # }
+    # The hard part:
+    # everything according to filters below
+    #
+
+    try:
+        filters = {
+            "age_min": request.form.get("age_min"),
+            "age_max": request.form.get("age_max"),
+            "gender": request.form.get("gender"),
+            "postal_code": request.form.get("postal_code"),
+            "postal_code_range": request.form.get("postal_code_range"),
+            "from_date": request.form.get("from_date"),
+            "to_date": request.form.get("to_date")
+
+        }
+    except:
+        filters = {
+            "age_min": 0,
+            "age_max": 100,
+            "gender": "",
+            "postal_code": 0,
+            "postal_code_range": 9999,
+            "from_date": None,
+            "to_date": None
+
+        }
+
+    current_orders = []
+    # data needed:
+    # order = {
+    #     "id":,
+    #     "customer_name":,
+    #     "address":,
+    #     "delivery":[person],
+    #     "status":,
+    #     "total":[price for everything],
+    #     "timestamp":
+    # }
+    #
+    #
+
+
+
+
+    return render_template("admin.html", filters=filters, )
 
 
 @app.route("/logout", methods=["GET", "POST"])
