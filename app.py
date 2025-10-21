@@ -7,7 +7,7 @@ from sqlalchemy.sql.expression import desc
 from sqlalchemy.sql.functions import count, func
 
 from insert import desserts, drinks
-from models import Base, Pizza, Customer, Order, OrderedPizza  # import your SQLAlchemy 2.0 models
+from models import Base, DiscountCode, Pizza, Customer, Order, OrderedPizza  # import your SQLAlchemy 2.0 models
 from config import Config
 from contextlib import contextmanager
 import utils
@@ -40,11 +40,19 @@ def get_description(type, id):
     return ""
 
 
-def get_total_price(item_dic):
+def get_total_price(item_dic, discount_code = None):
     total_price = 0
 
     for item in item_dic:
         total_price += item["price"]
+
+    if(discount_code != None):
+            if discount_code.type == "fixed":
+                total_price -= discount_code.amount
+            else:
+                total_price *= 1 + discount_code.amount
+
+
 
     return total_price
 
@@ -109,7 +117,7 @@ def checkout():
         item_dic = fsession["cart"]
     except:
         item_dic = []
-    return render_template("checkout.html", cart_items=item_dic, total = get_total_price(item_dic))
+    return render_template("checkout.html", cart_items=item_dic, total = get_total_price(item_dic, DiscountCode(code="A", type="fixed", amount = 10)))
 
 @app.route("/checkout/remove_from_cart", methods=["GET", "POST"])
 def remove_from_cart():

@@ -131,6 +131,12 @@ class Order(Base):
         total += sum(drink.price for drink in self.drinks)
         total += sum(dessert.price for dessert in self.desserts)
 
+        if(self.discount_code != None):
+            if self.discount_code.type == "fixed":
+                total -= self.discount_code.amount
+            else:
+                total *= 1 + self.discount_code.amount
+
         return total
 
 
