@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify, render_template, session as fsession,
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session, scoped_session, sessionmaker
 from sqlalchemy.sql.expression import desc
-from sqlalchemy.sql.functions import func
+from sqlalchemy.sql.functions import count, func
 
 from insert import desserts, drinks
 from models import Base, Pizza, Customer, Order, OrderedPizza  # import your SQLAlchemy 2.0 models
@@ -215,7 +215,10 @@ def top_pizzas():
     top_pizzas_q = None
 
     top_pizzas = []
-    for pizza in top_pizzas_q:
+
+    with db_session() as session:
+     for pizza in session.scalars(select(OrderedPizza.pizza_id, count(OrderedPizza.order_id)).group_by(OrderedPizza.pizza_id)):
+        print(pizza)
         top_pizzas.append({
             "name":pizza.name,
             "count": pizza.count,
