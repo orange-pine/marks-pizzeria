@@ -50,12 +50,11 @@ def get_delivery_person(postcode):
         delivery_people = session.scalars(select(DeliveryPerson)
                                          .where(DeliveryPerson.postcode_start <= postcode)
                                          .where(DeliveryPerson.postcode_end >= postcode))
-        if delivery_people.first() == None:
-            return None
 
-        # return delivery_people.
         for person in delivery_people:
             if datetime.now() > person.unavailable_before:
                 return person.id
+
+        return None
 
 

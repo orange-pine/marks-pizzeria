@@ -123,6 +123,17 @@ class Order(Base):
     desserts: Mapped[list[Dessert]] = relationship(secondary="OrderedDessert")
     drinks: Mapped[list[Drink]] = relationship(secondary="OrderedDrink")
 
+    @property
+    def total(self):
+        """Compute total price based on the sum of ingredient prices."""
+        total = 0
+        total += sum(pizza.price for pizza in self.pizzas)
+        total += sum(drink.price for drink in self.drinks)
+        total += sum(dessert.price for dessert in self.desserts)
+
+        return total
+
+
 
 class OrderedPizza(Base):
     __tablename__: str = "OrderedPizza"

@@ -190,27 +190,21 @@ def admin():
 
 @app.route("/admin/current_orders", methods=["GET", "POST"])
 def current_orders():
-    # query result here
-    # name of the customer as customer_name
-    # delivery person id (or name idk) as delivery
-    # total price as total
-    # filter for status !delivered
-    # order by date
-    current_orders_q = None
 
-    current_orders = []
-    for order in current_orders_q:
-        current_orders.append({
-            "id": order.id,
-            "customer_name": order.customer_name,
-            "address": order.address,
-            "delivery": order.delivery,
-            "status": order.status,
-            "total": order.total,
-            "timestamp": order.timestamp
-        })
+    with db_session() as session:
 
-    return render_template("current_orders.html", current_orders=current_orders)
+        for order in session.scalars(select(Order)):
+            current_orders.append({
+                "id": order.id,
+                "customer_name": order.customer.name,
+                "address": order.customer.address,
+                "delivery": order.delivery_person_id,
+                "status": order.status,
+                "total": order.total,
+                "timestamp": order.timestamp
+            })
+
+    return render_template("current_orders.html", orders=current_orders)
 
 @app.route("/admin/top_pizzas", methods=["GET", "POST"])
 def top_pizzas():

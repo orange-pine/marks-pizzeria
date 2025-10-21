@@ -14,7 +14,7 @@
                 <span class="orders-count">{{ orders|length }} pending order(s)</span>
             </div>
 
-            {% if orders %}
+            <!-- {% if orders %} -->
             <table class="orders-table">
                 <thead>
                     <tr>
@@ -44,12 +44,12 @@
                     {% endfor %}
                 </tbody>
             </table>
-            {% else %}
-            <div class="empty-state">
-                <h3>No Pending Orders</h3>
-                <p>All orders have been delivered!</p>
-            </div>
-            {% endif %}
+            <!-- {% else %} -->
+            <!-- <div class="empty-state"> -->
+            <!--     <h3>No Pending Orders</h3> -->
+            <!--     <p>All orders have been delivered!</p> -->
+            <!-- </div> -->
+            <!-- {% endif %} -->
         </div>
 
 
