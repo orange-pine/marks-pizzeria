@@ -8,14 +8,31 @@
 <body>
 
 <nav class="navbar">
+    <div class = wide-slot>
         <ul class="nav-links">
-            <li><a href="{{ url_for('index') }}">Home</a></li>
-             <li><a href="{{ url_for('menu') }}">Menu</a></li>
-             <li><a href="{{ url_for('checkout') }}">Checkout</a></li>
-            <li><a href="{{ url_for('admin') }}">Admin</a></li>
-            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                <li><a href="{{ url_for('index') }}"><img src = "../assets/images/edited_logo1.png"></a></li>
 
-        </ul>
+
+
+            </ul>
+        <div class = horizontal-slot style = margin-left:20px>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                 <li><a href="{{ url_for('menu') }}">Menu</a></li>
+                 <li><a href="{{ url_for('checkout') }}">Checkout</a></li>
+
+
+            </ul>
+        </div>
+        <div class="right-slot">
+            <ul class="nav-links">
+                <li><a href="{{ url_for('admin') }}">Admin</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+
+            </ul>
+
+        </div>
+    </div>
     </nav>
 
 

@@ -26,18 +26,19 @@ body {
 header {
     text-align: center;
     padding: 40px 0;
-    background-color: #fff;
+    background-color: #a10303;
     margin-bottom: 30px;
 }
 
 header h1 {
     font-size: 2.5em;
     margin-bottom: 10px;
+    color: #efefef;
 }
 
 header p {
     font-size: 1.2em;
-    color: #666;
+    color: #e7e7e7;
 }
 
 .menu-section {
@@ -309,49 +310,6 @@ header p {
     text-decoration: underline;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #423242;
-    color: #ffffff;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-}
-
-h2 {
-    text-align: center;
-    margin-top: 50px;
-    color: #cccccc;
-}
-
-
-
-form {
-    width: 600px;
-    margin: 50px auto;
-    padding: 30px;
-    color: #cccccc;
-    background-color: #483248;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-img {
-    border-radius: 16px;
-    border-color: #888888;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    margin: 20px auto;
-}
-
-label {
-    display: block;
-    text-align: center;
-    color: #cccccc;
-
-    margin-bottom: 2px;
-    margin-right: 5px;
-    font-weight: bold;
-}
 
 
 .navbar {
@@ -359,6 +317,7 @@ label {
     overflow: hidden;
     padding: 10px 0;
     position: sticky;
+    justify-content: space-between;
     top: 0;
     z-index: 100;
 }
@@ -378,6 +337,8 @@ label {
     gap: 30px;
 }
 
+
+
 .nav-links li {
     display: inline;
 }
@@ -395,48 +356,45 @@ label {
     border-radius: 4px;
 }
 
+.nav-links b {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    transition: background 0.3s ease;
+}
 
 
+.right-slot{
+    display:flex;
+    justify-content: right;
+    gap: 1rem;
+    top: 0;
+    z-index: 100;
+    padding: 0px;
+    margin-left: auto;
+
+
+}
 
 
 .horizontal-slot{
-display:flex;
-justify-content: center;
-    align-self: center;
-    align-items: center;
-    text-align:center;
-
-
-
-padding: 5px;
-
-}
-
-
-input[type="text"],
-input[type="number"],
-input[type="submit"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-input[type="submit"] {
-    background-color: #5F1F6F;
-    margin: 0 auto;
+    display:flex;
     justify-content: center;
     align-self: center;
     align-items: center;
     text-align:center;
+    padding: 5px;
+    gap: 1rem
 
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
 }
 
-input[type="submit"]:hover {
-    background-color: #9056b3;
+.wide-slot{
+    display:flex;
+    justify-content: space-between;
+    align-self: center;
+    align-items: center;
+    width: auto;
+    padding: 5px;
+
+
 }
