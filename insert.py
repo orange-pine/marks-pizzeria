@@ -120,10 +120,10 @@ discounts = [
 
 # Delivery Personnel
 delivery = [
-    DeliveryPerson(id=1, postcode_start=1000, postcode_end=1002, status="available"),
-    DeliveryPerson(id=2, postcode_start=1003, postcode_end=1005, status="available"),
-    DeliveryPerson(id=3, postcode_start=1006, postcode_end=1009, status="available"),
-    DeliveryPerson(id=4, postcode_start=1000, postcode_end=1005, status="busy"),
+    DeliveryPerson(id=1, postcode_start=1000, postcode_end=1002, unavailable_before=datetime(2025, 10, 18, 18, 45)),
+    DeliveryPerson(id=2, postcode_start=1003, postcode_end=1005, unavailable_before=datetime(2025, 10, 18, 18, 45)),
+    DeliveryPerson(id=3, postcode_start=1006, postcode_end=1009, unavailable_before=datetime(2025, 10, 18, 18, 45)),
+    DeliveryPerson(id=4, postcode_start=1000, postcode_end=1005, unavailable_before=datetime(2025, 10, 18, 18, 45)),
 ]
 
 # Orders

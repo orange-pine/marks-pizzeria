@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session, scoped_session, sessionmaker
 from sqlalchemy.sql.expression import desc
 from sqlalchemy.sql.functions import func
 
+from insert import desserts, drinks
 from models import Base, Pizza, Customer, Order, OrderedPizza  # import your SQLAlchemy 2.0 models
 from config import Config
 from contextlib import contextmanager
@@ -121,18 +122,33 @@ def remove_from_cart():
 def place_order():
 
     #try:
-        with transaction() as t:
-            print(request.form.get("postcode"))
-            customer = Customer(
-                id = db_session.scalar(select(Customer.id)) + 1,
+        with db_session() as session:
+            customer = utils.get_customer_by_name(request.form.get("name"))
+            if customer == None:
+                customer = Customer(
                 name=request.form.get("name"),
                 birthday=request.form.get("birthday"),
                 address=request.form.get("address"),
-                postcode= convert_postcode(request.form.get("postcode")),
-            )
-            db_session.add(customer)
-            db_session.flush()
+                postcode=request.form.get("postcode"),
+                )
+                session.add(customer)
+                session.commit()
 
+            #Assign delivery person
+
+            delivery_person_id = utils.get_delivery_person(customer.postcode)
+            print(delivery_person_id)
+            order = Order(customer_id=customer.id, timestamp=datetime.datetime.now(), status="no delivery")
+
+            session.add(order)
+
+            session.commit()
+
+            (pizzas, drinks, desserts) = utils.cart_to_items(fsession["cart"], order.id)
+
+            session.add_all(pizzas + drinks + desserts)
+
+            session.commit()
         return redirect(url_for('order_success'))
 
    # except Exception as e:
