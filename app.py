@@ -93,7 +93,7 @@ def index():
 @app.route("/menu", methods=["GET", "POST"])
 def menu():
 
-    return render_template("menu.html", pizzas=utils.get_pizzas())
+    return render_template("menu.html", pizzas=utils.get_pizzas(), drinks = utils.get_drinks(), desserts=utils.get_desserts())
 
 @app.route("/menu/add_to_cart", methods=["GET", "POST"])
 def add_to_cart():

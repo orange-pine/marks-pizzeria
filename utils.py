@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy import select
 from config import Config
 import app
+from insert import desserts, drinks
 from models import DeliveryPerson, Dessert, Drink, OrderedDessert, OrderedDrink, OrderedPizza, Pizza, Customer
 
 def get_pizzas():
@@ -19,12 +20,49 @@ def get_pizzas():
                 "vegan" : pizza.vegan
                 # "image": get_image(0, pizza.id) or "/static/images/default-pizza.jpg",
             })
-
     return pizza_dicts
+
+def get_drinks():
+    drinks_dicts = []
+    with app.db_session() as session:
+        for drink in session.scalars(select(Drink)):
+            drinks_dicts.append({
+                "id": drink.id,
+                "name": drink.name,
+                # "description": get_description(0, pizza.id),
+                # "ingredients" : pizza.ingredients,
+                "price": calculate_other_price(drink.price),
+                "vegetarian" : drink.vegetarian,
+                "vegan" : drink.vegan
+                # "image": get_image(0, pizza.id) or "/static/images/default-pizza.jpg",
+            })
+
+    return desserts_dicts
+
+def get_desserts():
+    desserts_dicts = []
+    with app.db_session() as session:
+        for dessert in session.scalars(select(Dessert)):
+            desserts_dicts.append({
+                "id": dessert.id,
+                "name": dessert.name,
+                # "description": get_description(0, pizza.id),
+                # "ingredients" : pizza.ingredients,
+                "price": calculate_other_price(dessert.price),
+                "vegetarian" : dessert.vegetarian,
+                "vegan" : dessert.vegan
+                # "image": get_image(0, pizza.id) or "/static/images/default-pizza.jpg",
+            })
+
+    return desserts_dicts
+
 
 
 def calculate_pizza_price(price) -> float:
      return round((Config.PIZZA_BASE_PRICE + price) * Config.MARGIN * Config.VAT, 2)
+
+def calculate_other_price(price) -> float:
+     return round((price) * Config.MARGIN * Config.VAT, 2)
 
 def get_customer_by_name(name):
     with app.db_session() as session:
