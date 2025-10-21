@@ -242,6 +242,12 @@ header p {
     margin-bottom: 20px;
 }
 
+.form-group-horizontal {
+    margin-bottom: 20px;
+    margin-right: 30px;
+    display: flex;
+}
+
 .form-group label {
     display: block;
     margin-bottom: 5px;

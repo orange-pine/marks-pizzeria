@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, session, redirect, url_for
+from flask import Flask, request, jsonify, render_template, session as fsession, redirect, url_for
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session, scoped_session, sessionmaker
 from models import Base, Pizza  # import your SQLAlchemy 2.0 models
@@ -61,6 +61,14 @@ def get_pizzas(filter_name=None):
 
     return pizza_dicts
 
+def get_total_price(item_dic):
+    total_price = 0
+
+    for item in item_dic:
+        total_price += item["price"]
+
+    return total_price
+
 
 # ----------------------------------------
 # Routes
@@ -74,6 +82,8 @@ def index():
 
 @app.route("/menu", methods=["GET", "POST"])
 def menu():
+    print(fsession)
+
     pizza_dicts = []
     with engine.connect() as conn:
         for pizza in session.scalars(select(Pizza)):
@@ -88,24 +98,56 @@ def menu():
     print(pizza_dicts)
     return render_template("menu.html", pizzas=pizza_dicts)
 
+@app.route("/menu/add_to_cart", methods=["GET", "POST"])
+def add_to_cart():
+    added_item = {
+        "id" : request.form.get("item_id"),
+        "type" : request.form.get("item_type"),
+        "name" : request.form.get("item_name"),
+        "price" : float(request.form.get("item_price"))
+    }
+    fsession["cart"].append(added_item)
+    fsession.modified = True
+    print(added_item)
+    print(fsession["cart"])
+
+    return redirect(url_for("menu"))
 
 @app.route("/checkout", methods=["GET", "POST"])
 def checkout():
-    return render_template("checkout.html")
+
+    print("AaAAAAAAAAAAA")
+    print( fsession["cart"])
+    item_dic = fsession["cart"]
+    return render_template("checkout.html", cart_items=item_dic, total = get_total_price(item_dic))
+
+@app.route("/checkout/remove_from_cart", methods=["GET", "POST"])
+def remove_from_cart():
+    deleted_item = request.form.get("item_id")
+    fsession["cart"].remove(deleted_item)
+    return redirect(url_for("checkout"))
+
+@app.route("/checkout/place_order", methods=["GET", "POST"])
+def place_order():
+    return redirect(url_for("checkout"))
+
+
 
 
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
-    if not session.get("admin"):
+    if not fsession.get("admin"):
         return redirect("/admin/login")
     return render_template("index.html")
 
 
 @app.route("/logout", methods=["GET", "POST"])
 def logout():
-    session.pop("admin", None)
-    session.pop("username", None)
-    session.pop("password", None)
+    fsession.pop("admin", None)
+    fsession.pop("username", None)
+    fsession.pop("password", None)
+    fsession["cart"] = []
+    fsession.modified = True
     return redirect(url_for("index"))
 
 
@@ -116,9 +158,9 @@ def admin_login():
 
 @app.route("/admin/login/submit", methods=["GET", "POST"])
 def admin_login_submit():
-    session["username"] = request.form["username"]
-    session["password"] = encrypt(request.form["password"])
-    session["admin"] = True
+    fsession["username"] = request.form["username"]
+    fsession["password"] = (request.form["password"])
+    fsession["admin"] = True
     return redirect("/")
 
 

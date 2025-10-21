@@ -30,7 +30,17 @@
                                 {% endfor %}
                             </ul>
                         </details>
-                                           </div>
+                        <div class="item-footer">
+                            <span class="price">${{ "%.2f"|format(pizza.price) }}</span>
+                            <form method="POST" action="{{ url_for('add_to_cart') }}">
+                                <input type="hidden" name="item_id" value="{{ pizza.id }}">
+                                <input type="hidden" name="item_type" value="pizza">
+                                <input type="hidden" name="item_name" value="{{ pizza.name }}">
+                                <input type="hidden" name="item_price" value="{{ pizza.price }}">
+                                <button type="submit" class="add-btn">Add to Cart</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
                 {% endfor %}
             </div>
