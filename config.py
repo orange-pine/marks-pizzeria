@@ -7,3 +7,6 @@ class Config:
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://root:{PASSWORD}@localhost:3306/mark_pizza"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = "aP!p$M"
+    MARGIN = 1.4
+    VAT = 1.09
+    PIZZA_BASE_PRICE = 5.00
