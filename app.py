@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify, render_template, session as fsession, redirect, url_for
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session, scoped_session, sessionmaker
-from models import Base, Pizza  # import your SQLAlchemy 2.0 models
+from models import Base, Pizza, Customer, Order  # import your SQLAlchemy 2.0 models
 from config import Config
+from contextlib import contextmanager
 
 # ----------------------------------------
 # Flask setup
@@ -70,6 +71,30 @@ def get_total_price(item_dic):
     return total_price
 
 
+def convert_postcode(postcode):
+    pc = 0
+    pc += int(postcode[0:3]) * 10000
+    pc += int(postcode[4]) * 100
+    pc += int(postcode[5])
+    return pc
+# ----------------------------------------
+# Transaction manager
+# ----------------------------------------
+
+@contextmanager
+def transaction():
+    try:
+        yield db_session
+        db_session.commit()
+    except:
+        db_session.rollback()
+        raise
+    finally:
+        db_session.remove()
+
+
+
+
 # ----------------------------------------
 # Routes
 # ----------------------------------------
@@ -116,8 +141,7 @@ def add_to_cart():
 @app.route("/checkout", methods=["GET", "POST"])
 def checkout():
 
-    print("AaAAAAAAAAAAA")
-    print( fsession["cart"])
+
     item_dic = fsession["cart"]
     return render_template("checkout.html", cart_items=item_dic, total = get_total_price(item_dic))
 
@@ -129,9 +153,30 @@ def remove_from_cart():
 
 @app.route("/checkout/place_order", methods=["GET", "POST"])
 def place_order():
-    return redirect(url_for("checkout"))
+
+    #try:
+        with transaction() as t:
+            print(request.form.get("postcode"))
+            customer = Customer(
+                id = db_session.scalar(select(Customer.id)) + 1,
+                name=request.form.get("name"),
+                birthday=request.form.get("birthday"),
+                address=request.form.get("address"),
+                postcode= convert_postcode(request.form.get("postcode")),
+            )
+            db_session.add(customer)
+            db_session.flush()
+
+        return redirect(url_for('order_success'))
+
+   # except Exception as e:
+       # return render_template('error.html', message=str(e))
 
 
+
+@app.route("/checkout/order_success", methods=["GET", "POST"])
+def order_success():
+    return render_template("order_success.html")
 
 
 @app.route("/admin", methods=["GET", "POST"])
