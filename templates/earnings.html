@@ -1,0 +1,55 @@
+<html>
+
+{% extends "layout.html" %}
+
+
+{% block title %}Welcome Page{% endblock %}
+
+
+{% block content %}
+
+<div class = "orders-container">
+    {% if earnings_data %}
+            <div class="earnings-summary">
+
+                <div class="summary-item">
+                    <h3>Total Customers</h3>
+                    <p>{{ earnings_data|length }}</p>
+                </div>
+            </div>
+
+
+            <table class="earnings-table">
+                <thead>
+                    <tr>
+                        <th>{{group_by}}</th>
+                        <th>Orders</th>
+                        <th>Earnings</th>
+                        <th>Avg. Order Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for earnings in earnings_data %}
+                    <tr>
+                        <td>{{ earnings.grouping}}</td>
+                        <td>{{ earnings.orders }}</td>
+                        <td>{{ earnings.total_earnings }}</td>
+                        <td>{{ earnings.avg_price }}</td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <h3>No Data Found</h3>
+                <p>Try adjusting your filters</p>
+            </div>
+            {% endif %}
+
+</div>
+
+
+{% endblock %}
+
+</html>>

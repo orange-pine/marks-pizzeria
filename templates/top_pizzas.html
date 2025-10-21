@@ -1,0 +1,48 @@
+<html>
+
+{% extends "layout.html" %}
+
+
+{% block title %}Welcome Page{% endblock %}
+
+
+{% block content %}
+
+
+<div class="orders-container">
+            {% if top_pizza%}
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Amount sold</th>
+                        <th>Total</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pizza in top_pizza %}
+                    <tr>
+                        <td> pizza.name
+                        </td>
+                        <td class="order-total">{{ pizza.count }}</td>
+                        <td>{{ pizza.total }}</td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class = "orders-container">
+                <h3> No data. </h3>
+                <label>No pizzas delivered this month.</label>
+            </div>
+            {% endif%}
+        </div>
+
+
+
+
+{% endblock %}
+
+</html>>

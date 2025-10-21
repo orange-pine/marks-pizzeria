@@ -7,191 +7,34 @@
 
 
 {% block content %}
-<div class = "orders-container">
-    <div class="horizontal-slot">
-        <div class="orders-container">
+<div class = "container">
+
+
+<div class="container">
             <div class="orders-header">
-                <h1>Undelivered Orders</h1>
-                <span class="orders-count">{{ orders|length }} pending order(s)</span>
+                <h1>Earnings</h1>
             </div>
 
-            {% if orders %}
-            <table class="orders-table">
-                <thead>
-                    <tr>
-                        <th>Order #</th>
-                        <th>Customer</th>
-                        <th>Delivery Person</th>
-                        <th>Status</th>
-                        <th>Total</th>
-                        <th>Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for order in orders %}
-                    <tr>
-                        <td class="order-id">#{{ order.id }}</td>
-                        <td>
-                            <div>{{ order.customer_name }}</div>
-                            <div>{{order.address}}</div>
-                        </td>
-                        <td>{{ order.delivery }}</td>
-                        <td>{{ order.status }}</td>
-
-                        <td class="order-total">${{ "%.2f"|format(order.total) }}</td>
-                        <td class="order-time">{{ order.timestamp }}</td>
-
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <div class="empty-state">
-                <h3>No Pending Orders</h3>
-                <p>All orders have been delivered!</p>
-            </div>
-            {% endif %}
-        </div>
+        <ul class="nav-links">
+                <li><a href="{{ url_for('current_orders') }}">Track Current Orders</a></li>
+                 <li><a href="{{ url_for('top_pizzas') }}">Top Pizzas This Month</a></li>
 
 
-        <div class="orders-container">
-            {% if top_pizza%}
-            <table class="orders-table">
-                <thead>
-                    <tr>
-                        <th>Item Name</th>
-                        <th>Amount sold</th>
-                        <th>Total</th>
 
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for pizza in top_pizza %}
-                    <tr>
-                        <td> pizza.name
-                        </td>
-                        <td class="order-total">{{ pizza.count }}</td>
-                        <td>{{ pizza.total }}</td>
+            </ul>
 
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <div class = "orders-container">
-                <h3> No data. </h3>
-                <label>No pizzas delivered this month.</label>
-            </div>
-            {% endif%}
-        </div>
 
-    </div>
-
-<div class="earnings-section">
-            <div class="orders-header">
-                <h1>Employee Earnings</h1>
-            </div>
-
-            <!-- Filter Form -->
-            <form method="GET" action="{{ url_for('admin') }}" class="filter-form">
-                <div class="filter-row">
-                    <div class="filter-group">
-                        <label for="age_min">Min Age</label>
-                        <input type="number" id="age_min" name="age_min" value="{{ filters.age_min or '' }}" placeholder="e.g., 18">
-                    </div>
-
-                    <div class="filter-group">
-                        <label for="age_max">Max Age</label>
-                        <input type="number" id="age_max" name="age_max" value="{{ filters.age_max or '' }}" placeholder="e.g., 65">
-                    </div>
-
-                    <div class="filter-group">
-                        <label for="gender">Gender</label>
-                        <select id="gender" name="gender">
-                            <option value="">All</option>
-                            <option value="M" {% if filters.gender == 'M' %}selected{% endif %}>Male</option>
-                            <option value="F" {% if filters.gender == 'F' %}selected{% endif %}>Female</option>
-                            <option value="O" {% if filters.gender == 'O' %}selected{% endif %}>Other</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label for="postal_code">Postal Code</label>
-                        <input type="text" id="postal_code" name="postal_code" value="{{ filters.postal_code or '' }}" placeholder="e.g., 12345">
-                    </div>
-
-                     <div class="filter-group">
-                        <label for="postal_code">Postal Code Range</label>
-                        <input type="text" id="postal_code_range" name="postal_code" value="{{ filters.postal_code_range or '' }}" placeholder="e.g., 12345">
-                    </div>
-                </div>
-
-                <div class="filter-row">
-                    <div class="filter-group">
-                        <label for="date_from">From Date</label>
-                        <input type="date" id="date_from" name="date_from" value="{{ filters.date_from or '' }}">
-                    </div>
-
-                    <div class="filter-group">
-                        <label for="date_to">To Date</label>
-                        <input type="date" id="date_to" name="date_to" value="{{ filters.date_to or '' }}">
-                    </div>
-                </div>
-
-                <div style="margin-top: 15px;">
-                    <button type="submit" class="filter-btn">Apply Filters</button>
-                    <a href="{{ url_for('admin') }}" class="reset-btn" style="text-decoration: none; display: inline-block; line-height: 1;">Reset</a>
-                </div>
+            <form method="GET" action="/admin/earnings" class="filter-form">
+                <select name="group_by" onchange="this.form.submit()">
+                    <option value="day" {% if group_by == 'month' %}selected{% endif %}>Month</option>
+                    <option value="week" {% if group_by == 'age' %}selected{% endif %}>Age</option>
+                    <option value="month" {% if group_by == 'gender' %}selected{% endif %}>Gender</option>
+                    <option value="month" {% if group_by == 'postcode' %}selected{% endif %}>Postal Code</option>
+                </select>
             </form>
 
 
-            {% if earnings_data %}
-            <div class="earnings-summary">
-                <div class="summary-item">
-                    <h3>Total Employees</h3>
-                    <p>{{ earnings_data|length }}</p>
-                </div>
-                <div class="summary-item">
-                    <h3>Total Earnings</h3>
-                    <p>${{ "%.2f"|format(total_earnings) }}</p>
-                </div>
-                <div class="summary-item">
-                    <h3>Average Earnings</h3>
-                    <p>${{ "%.2f"|format(avg_earnings) }}</p>
-                </div>
-            </div>
 
-            <!-- Earnings Table -->
-            <table class="earnings-table">
-                <thead>
-                    <tr>
-                        <th>Employee ID</th>
-                        <th>Name</th>
-                        <th>Age</th>
-                        <th>Gender</th>
-                        <th>Postal Code</th>
-                        <th>Total Earnings</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for employee in earnings_data %}
-                    <tr>
-                        <td class="order-id">#{{ employee.id }}</td>
-                        <td>{{ employee.name }}</td>
-                        <td>{{ employee.age }}</td>
-                        <td>{{ employee.gender }}</td>
-                        <td>{{ employee.postal_code }}</td>
-                        <td class="order-total">${{ "%.2f"|format(employee.earnings) }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <div class="empty-state">
-                <h3>No Data Found</h3>
-                <p>Try adjusting your filters</p>
-            </div>
-            {% endif %}
         </div>
 
 </div>

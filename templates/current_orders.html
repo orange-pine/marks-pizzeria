@@ -1,0 +1,62 @@
+<html>
+
+{% extends "layout.html" %}
+
+
+{% block title %}Welcome Page{% endblock %}
+
+
+{% block content %}
+
+<div class="orders-container">
+            <div class="orders-header">
+                <h1>Undelivered Orders</h1>
+                <span class="orders-count">{{ orders|length }} pending order(s)</span>
+            </div>
+
+            {% if orders %}
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Customer</th>
+                        <th>Delivery Person</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td class="order-id">#{{ order.id }}</td>
+                        <td>
+                            <div>{{ order.customer_name }}</div>
+                            <div>{{order.address}}</div>
+                        </td>
+                        <td>{{ order.delivery }}</td>
+                        <td>{{ order.status }}</td>
+
+                        <td class="order-total">${{ "%.2f"|format(order.total) }}</td>
+                        <td class="order-time">{{ order.timestamp }}</td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <h3>No Pending Orders</h3>
+                <p>All orders have been delivered!</p>
+            </div>
+            {% endif %}
+        </div>
+
+
+
+
+
+
+{% endblock %}
+
+</html>>

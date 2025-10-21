@@ -151,75 +151,6 @@ def admin():
         return redirect("/admin/login")
 
 
-
-    top_pizza = []
-    with db_session() as session:
-        stmt = select(Pizza)
-
-        date_month_ago = datetime.datetime.now() - datetime.timedelta(days=30)
-
-        top_pizzas = db_session.query(
-            Pizza.name,
-            func.count(OrderedPizza.pizza_id).label('total_sold')
-        ).join(
-            OrderedPizza, Pizza.id == OrderedPizza.pizza_id
-        ).join(
-            Order, OrderedPizza.order_id == Order.id
-        ).filter(
-            Order.timestamp >= date_month_ago
-        ).group_by(
-            Pizza.id, Pizza.name
-        ).order_by(
-            desc('total_sold')
-        ).limit(3).all()
-
-
-        for pizza in top_pizzas:
-            countp = func.count(Pizza.id).label("count")
-            top_pizza.append({
-                "name": pizza.name,
-                "count": countp,
-                "price": pizza.price * countp,
-
-            })
-
-    earnings_data = []
-    #data needed:
-    # employee = {
-    #     "id":,
-    #     "name":,
-    #     "age":,
-    #     "gender":,
-    #     "postal_code":,
-    #     "earnings":[total sum]
-    # }
-    # The hard part:
-    # everything according to filters below
-    #
-
-    try:
-        filters = {
-            "age_min": request.form.get("age_min"),
-            "age_max": request.form.get("age_max"),
-            "gender": request.form.get("gender"),
-            "postal_code": request.form.get("postal_code"),
-            "postal_code_range": request.form.get("postal_code_range"),
-            "from_date": request.form.get("from_date"),
-            "to_date": request.form.get("to_date")
-
-        }
-    except:
-        filters = {
-            "age_min": 0,
-            "age_max": 100,
-            "gender": "",
-            "postal_code": 0,
-            "postal_code_range": 9999,
-            "from_date": None,
-            "to_date": None
-
-        }
-
     current_orders = []
     # data needed:
     # order = {
@@ -237,7 +168,75 @@ def admin():
 
 
 
-    return render_template("admin.html", filters=filters, )
+
+    return render_template("admin.html" )
+
+
+@app.route("/admin/current_orders", methods=["GET", "POST"])
+def current_orders():
+    # query result here
+    # name of the customer as customer_name
+    # delivery person id (or name idk) as delivery
+    # total price as total
+    # filter for status !delivered
+    # order by date
+    current_orders_q = None
+
+    current_orders = []
+    for order in current_orders_q:
+        current_orders.append({
+            "id": order.id,
+            "customer_name": order.customer_name,
+            "address": order.address,
+            "delivery": order.delivery,
+            "status": order.status,
+            "total": order.total,
+            "timestamp": order.timestamp
+        })
+
+    return render_template("current_orders.html", current_orders=current_orders)
+
+@app.route("/admin/top_pizzas", methods=["GET", "POST"])
+def top_pizzas():
+
+    # query result here
+    # order by count of orders
+    # calculate for past 30 days
+    top_pizzas_q = None
+
+    top_pizzas = []
+    for pizza in top_pizzas_q:
+        top_pizzas.append({
+            "name":pizza.name,
+            "count": pizza.count,
+            "total": pizza.total,
+
+        })
+
+
+    return render_template("top_pizzas.html", top_pizza=top_pizzas)
+
+@app.route("/admin/earnings", methods=["GET", "POST"])
+def earnings():
+    group_by = request.args.get('group_by', 'month')
+
+    # query result here
+    # name groupings "month", "age", "gender", "postcode"
+    earnings_q = None
+
+    earnings = []
+    for e in earnings_q:
+        current_orders.append({
+            "grouping": e.group_by,
+            "orders": e.count,
+            "total_earnings": e.total,
+            "avg_price": e.total/e.count
+        })
+
+
+
+    return render_template("earnings.html", earnings=earnings, group_by=group_by)
+
 
 
 @app.route("/logout", methods=["GET", "POST"])
